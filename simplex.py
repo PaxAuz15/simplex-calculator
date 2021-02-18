@@ -11,217 +11,212 @@ except ImportError:
 
 etiqueta_ecuaciones = []
 col_values = []
-z_equation = []
-final_rows = []
-solutions = []
+ecuacionZ = []
+filas_finales = []
+soluciones = []
 x = 'X'
-z2_equation = []
+ecuacionZ_2 = []
 removable_vars = []
-no_solution = """
-        ---unboundedness ----
-Your problem might not be having solution due to wrong 
-formulation of constrains,
+noHaySolucion = """
+        ---Sin límites ----
+Es posible que su problema no tenga solución debido a errores
+formulación de restricciones,
 
-This mostly occurs when you leave out some relevant constrains 
-please check again the formulation of constrains
+Esto ocurre principalmente cuando omite algunas restricciones relevantes
+por favor revise nuevamente la formulación de restricciones
             """
 
 
 def main():
-    global decimals
+    global decimales
     global const_num, prod_nums
     print("""
-    EKR-SIMPLEX CALCULATOR
+    CALCULADORA - METODO SIMPLEX
     
-what type of problem do you want to solve?	
-    1 :maximization (<=).
-    2 :minimization (>=).
+    Qué tipo de problema quieres resolver?	
+    1 :maximización (<=).
+    2 :minimización (>=).
         
-    0 :For Help.
+    0 :Para ayuda!
     """)
     try:
-        prob_type = int(input("enter the number problem type: >"))
+        prob_type = int(input("Ingrese el número del tipo de problema: >"))
     except ValueError:
-        print("please enter a number from choices above")
-        prob_type = int(input("enter the number problem type: >"))
+        print("Ingrese un número de las opciones anteriores ")
+        prob_type = int(input("Ingrese el número del tipo de problema: >"))
     if prob_type != 2 and prob_type != 1 and prob_type != 0:
-        sys.exit("you enter a wrong problem choice ->" + str(prob_type))
+        sys.exit("Usted escogió de manera incorrecta el tipo de problema ->" + str(prob_type))
     if prob_type == 0:
         print(r"""
         --HELP:
-        USING SIMPLEX CALCULATOR
+        CALCULADORA - METODO SIMPLEX
         
-        ----- requirements -----
+        ----- Requerimientos -----
         
-        1 -> python - install python (https://www.python.org)
-        2 -> pip    - install pip (google for your Operating System)
-        3 -> numpy  - pip install numpy  - required!!
-        4 -> pandas - pip install pandas - optional - makes the tableus more beautiful and orderly
+        1 -> python - instalar python (https://www.python.org)
+        2 -> pip    - instalar pip (google for your Operating System)
+        3 -> numpy  - pip install numpy (comando unix)  - requerido!!
+        4 -> pandas - pip install pandas (comando unix) - opcional - hace que el cuadro sea más hermoso y ordenado 
         
-        ----- choices -----
+        ----- Elecciones -----
         
-        1 -> Simplex maximization problems like maximization of profits
-        2 -> Simplex minimization problem like minimization of expenditure in company
-        0 -> Help on using the calculator
+        1 -> Problemas de maximización simplex como maximización de ganancias 
+        2 -> Problema de minimización simplex como minimización de gastos en empresa 
+        0 -> Ayuda sobre el uso de la calculadora 
         
-        ----- best data -----
+        ----- Ingrese mejores datos -----
         
-        please rename your products to X1, X2, X3...Xn
-        for easy feeding of data
+        Renombre las variables segun los productos a analizar para X1, X2, X3...Xn
+        para facilitar la alimentación de datos.
         
-        n - being the number of products you have
+        n - siendo la cantidad de productos que tienes 
         
-        example: computers - X1
-                 printers  - X2
+        ejemplo: computadoras - X1
+                 impresoras   - X2
 
-        you can use: - whole numbers
-                     - decimal numbers
-                     - fractions
-                Entering the value you are prompted to. the decimal are not 
-                rounded off on entering. this ensures high accuracy.
-                for recurring and long fractions, ie. (1/3). the decimal places are ronded of 
-                to default of python
+        Ud puede usar:  - números enteros
+                        - n+umeros decimales
+                        - fracciones
+                Ingresando el valor que se le solicita. los decimales no se redondean al ingresar. 
+                Esto asegura una alta precisión. para fracciones largas y recurrentes, 
+                es decir. (1/3). los lugares decimales están ajustados al valor predeterminado de Python 
          
-        you are advised to use values less than 10000000
-        you can standardize the data by dividing it to small values
-        and re-converting after getting solution
+        Se recomienda utilizar valores inferiores a 10000000(diez millones). 
+        Puede estandarizar los datos dividiéndolos en valores pequeños 
+        y volviendo a convertirlos después de obtener la solución. 
          
-        big values are used for slack in this program.
-        so using big values may lead to confusion of data with the
-        slack variables in some cases
+        Los valores grandes se utilizan para la holgura en este programa. 
+        Por lo que el uso de valores grandes puede generar confusión 
+        de datos con las variables de holgura en algunos casos 
           
         
-        ----- assumptions -----
+        ----- Supuestos -----
         
-        I assume that you know how to read the simplex table.
-        I also assume that you know how to interpret the data in the table and So 
-        I did not interpret the data 
+        Supongo que sabes leer la tabla simplex. 
+        También asumo que sabes cómo interpretar los datos en la tabla y 
+        por eso no interpreté los datos 
         
-        This program is to be used by statisticians and also those with
-        an idea about the simplex problems
+        Este programa debe ser utilizado por estadísticos y 
+        también por aquellos que tengan una idea sobre los problemas simplex. 
         
-        This programs though need no much knowledge on mathematics/statistics
+        Sin embargo, estos programas no necesitan mucho conocimiento en matemáticas / estadística 
         
-        ----- mixed simplex problem -----
+        ----- Problemas de método simplex mixtos -----
           
-        I have not make a choice for mixed simplex problem and so for now 
-        the program may not provide a solution for such problems
+        No he hecho una elección para el problema de símplex mixto y, 
+        por ahora, es posible que el programa no proporcione una 
+        solución para tales problemas. 
          
-        ----- declaimer -----
+        ----- OJO -----
         
-        Only the console  option of this program is available yet but the GUI might be available
-        at some point and when available, I will update on how to use the GUI.
+        Solo la opción de consola de este programa está disponible todavía, 
+        pero la GUI podría estar disponible en algún momento y, cuando esté disponible, 
+        actualizaré sobre cómo usar la GUI. 
           
-        The program has been tested with several examples but maybe all the exception 
-        may not have been countered fully. using this program will be an alternative
-        you chose and so we I am not expecting a complain in failure to meet your expectation as indicated in the LICENCE.
+        #Puede sugerir adiciones o incluso enviarme errores en el programa en el correo electrónico a continuación .#
           
-        #You can suggest additions or even send me bugs in the program in the email below.#
-          
-        kimrop20@gmail.com
+        luisauzm07ci@gmail.com
         
         
            
-        ----- licence -----
+        ----- licencia -----
         
-        This program is to be used freely. You can also re-edit or modify or even add to
-        this program.
-        you can also share but you should not change the developer ownership.
+        Este programa debe utilizarse libremente. También puede volver a 
+        editar o modificar o incluso agregar a este programa.
+        También puede compartir, pero no debe cambiar la propiedad del desarrollador. 
         
-        I will appreciate credit given to me
+        Agradeceré el crédito que se me haya dado 
         
-        ----- developer -----
+        ----- desarrollador -----
           
-        developed by [ELPHAS KIMUTAI ROP] .
-        Student Bsc. Statistics and programming.
-        Machakos University, Kenya.
-        Email   : kimrop20@gmail.com
-        Website : http://bestcoders.herokuapp.com
-         
+        desarrollado por [LUIS AUZ GARCIA] .
+        Estudiante de Investigación de Operaciones.
+        ULEAM, Ecuador.
+        Email   : luisauzm07ci@gmail.com         
         
          
         """)
         sys.exit()
     print('\n##########################################')
     global const_names
-    const_num = int(input("how many products do you have: >"))
-    prod_nums = int(input("how many constrains do you have: >"))
+    const_num = int(input("Cuántos productos tienes?: >"))
+    prod_nums = int(input("Cuántas condiciones tienes?: >"))
     const_names = [x + str(i) for i in range(1, const_num + 1)]
     for i in range(1, prod_nums + 1):
-        prod_val = input("enter constrain {} name: >".format(i))
+        prod_val = input("Ingrese el nombre de la condición {}: >".format(i))
         etiqueta_ecuaciones.append(prod_val)
     print("__________________________________________________")
     if prob_type == 1:
         for i in const_names:
             try:
-                val = float(Fraction(input("enter the value of %s in Z equation: >" % i)))
+                val = float(Fraction(input("ingrese el valor de  %s en la ecuación Z: >" % i)))
             except ValueError:
-                print("please enter a number")
-                val = float(Fraction(input("enter the value of %s in Z equation: >" % i)))
-            z_equation.append(0 - int(val))
-        z_equation.append(0)
+                print("Por favor, Ingrese solo valores numéricos")
+                val = float(Fraction(input("Ingrese el valor de  %s en la ecuación Z: >" % i)))
+            ecuacionZ.append(0 - int(val))
+        ecuacionZ.append(0)
 
-        while len(z_equation) <= (const_num + prod_nums):
-            z_equation.append(0)
+        while len(ecuacionZ) <= (const_num + prod_nums):
+            ecuacionZ.append(0)
         print("__________________________________________________")
         for prod in etiqueta_ecuaciones:
             for const in const_names:
                 try:
-                    val = float(Fraction(input("enter the value of %s in %s: >" % (const, prod))))
+                    val = float(Fraction(input("Ingrese el valor de %s en %s: >" % (const, prod))))
                 except ValueError:
-                    print("please ensure you enter a number")
-                    val = float(Fraction(input("enter the value of %s in %s: >" % (const, prod))))
+                    print("Por favor, ingrese solo valores numéricos")
+                    val = float(Fraction(input("Ingrese el valor de %s en %s: >" % (const, prod))))
                 col_values.append(val)
-            equate_prod = float(Fraction(input('equate %s to: >' % prod)))
+            equate_prod = float(Fraction(input('Igualar %s a: >' % prod)))
             col_values.append(equate_prod)
 
         final_cols = stdz_rows(col_values)
         i = len(const_names) + 1
         while len(const_names) < len(final_cols[0]) - 1:
             const_names.append('X' + str(i))
-            solutions.append('X' + str(i))
+            soluciones.append('X' + str(i))
             i += 1
-        solutions.append(' Z')
-        const_names.append('Solution')
-        final_cols.append(z_equation)
-        final_rows = np.array(final_cols).T.tolist()
+        soluciones.append(' Z')
+        const_names.append('Solución')
+        final_cols.append(ecuacionZ)
+        filas_finales = np.array(final_cols).T.tolist()
         print("_____________________________________________")
-        decimals = int(input('Number of roundoff decimals : '))
+        decimales = int(input('Número de decimales para redondear : '))
         print('\n##########################################')
-        maximization(final_cols, final_rows)
+        maximization(final_cols, filas_finales)
 
     elif prob_type == 2:
         for i in const_names:
             try:
-                val = float(Fraction(input("enter the value of %s in Z equation: >" % i)))
+                val = float(Fraction(input("Ingrese el valor de %s en la ecuación Z: >" % i)))
             except ValueError:
-                print("please enter a number")
-                val = float(Fraction(input("enter the value of %s in Z equation: >" % i)))
-            z_equation.append(val)
-        z_equation.append(0)
+                print("Por favor, Ingrese un número")
+                val = float(Fraction(input("Ingrese el valor de %s en la ecuación Z: >" % i)))
+            ecuacionZ.append(val)
+        ecuacionZ.append(0)
 
-        while len(z_equation) <= (const_num + prod_nums):
-            z_equation.append(0)
+        while len(ecuacionZ) <= (const_num + prod_nums):
+            ecuacionZ.append(0)
         print("__________________________________________________")
         for prod in etiqueta_ecuaciones:
             for const in const_names:
                 try:
-                    val = float(Fraction(input("enter the value of %s in %s: >" % (const, prod))))
+                    val = float(Fraction(input("Ingrese el valor de %s en %s: >" % (const, prod))))
                 except ValueError:
-                    print("please ensure you enter a number")
-                    val = float(Fraction(input("enter the value of %s in %s: >" % (const, prod))))
+                    print("Por favor, Ingrese un número")
+                    val = float(Fraction(input("Ingrese el valor de %s en %s: >" % (const, prod))))
                 col_values.append(val)
-            equate_prod = float(Fraction(input('equate %s to: >' % prod)))
+            equate_prod = float(Fraction(input('Igualar %s a: >' % prod)))
             col_values.append(equate_prod)
 
         final_cols = stdz_rows2(col_values)
         i = len(const_names) + 1
         while len(const_names) < prod_nums + const_num:
             const_names.append('X' + str(i))
-            solutions.append('X' + str(i))
+            soluciones.append('X' + str(i))
             i += 1
-        solutions.append(' Z')
-        solutions[:] = []
+        soluciones.append(' Z')
+        soluciones[:] = []
         add_from = len(const_names) + 1
         while len(const_names) < len(final_cols[0][:-1]):
             removable_vars.append('X' + str(add_from))
@@ -229,48 +224,48 @@ what type of problem do you want to solve?
             add_from += 1
         removable_vars.append(' Z')
         removable_vars.append('Z1')
-        const_names.append('Solution')
+        const_names.append('Solución')
         for ems in removable_vars:
-            solutions.append(ems)
-        while len(z_equation) < len(final_cols[0]):
-            z_equation.append(0)
-        final_cols.append(z_equation)
-        final_cols.append(z2_equation)
-        final_rows = np.array(final_cols).T.tolist()
+            soluciones.append(ems)
+        while len(ecuacionZ) < len(final_cols[0]):
+            ecuacionZ.append(0)
+        final_cols.append(ecuacionZ)
+        final_cols.append(ecuacionZ_2)
+        filas_finales = np.array(final_cols).T.tolist()
         print("________________________________")
-        decimals = int(input('Number of roundoff decimals : '))
+        decimales = int(input('Número de decimales para redondear : '))
         print('\n##########################################')
-        minimization(final_cols, final_rows)
+        minimization(final_cols, filas_finales)
 
     else:
-        sys.exit("you enter a wrong problem choice ->" + str(prob_type))
+        sys.exit("Ud ingresó una opción de problema incorrecta->" + str(prob_type))
 
 
-def maximization(final_cols, final_rows):
+def maximization(final_cols, filas_finales):
     row_app = []
     last_col = final_cols[-1]
     min_last_row = min(last_col)
     min_manager = 1
-    print(" 1 TABLEAU")
+    print(" 1 TABLA")
     try:
-        final_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=solutions)
+        final_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=soluciones)
         print(final_pd)
     except:
         print('  ', const_names)
         i = 0
         for cols in final_cols:
-            print(solutions[i], cols)
+            print(soluciones[i], cols)
             i += 1
     count = 2
     pivot_element = 2
     while min_last_row < 0 < pivot_element != 1 and min_manager == 1 and count < 6:
         print("*********************************************************")
         last_col = final_cols[-1]
-        last_row = final_rows[-1]
+        last_row = filas_finales[-1]
         min_last_row = min(last_col)
         index_of_min = last_col.index(min_last_row)
-        pivot_row = final_rows[index_of_min]
-        index_pivot_row = final_rows.index(pivot_row)
+        pivot_row = filas_finales[index_of_min]
+        index_pivot_row = filas_finales.index(pivot_row)
         row_div_val = []
         i = 0
         for _ in last_row[:-1]:
@@ -295,48 +290,48 @@ def maximization(final_cols, final_rows):
             if col is not pivot_col and col is not final_cols[-1]:
                 form = col[index_of_min] / pivot_element
                 final_val = np.array(pivot_col) * form
-                new_col = (np.round((np.array(col) - final_val), decimals)).tolist()
+                new_col = (np.round((np.array(col) - final_val), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
 
             elif col is pivot_col:
-                new_col = (np.round((np.array(col) / pivot_element), decimals)).tolist()
+                new_col = (np.round((np.array(col) / pivot_element), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
             else:
                 form = abs(col[index_of_min]) / pivot_element
                 final_val = np.array(pivot_col) * form
-                new_col = (np.round((np.array(col) + final_val), decimals)).tolist()
+                new_col = (np.round((np.array(col) + final_val), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
-        final_rows[:] = []
-        re_final_rows = np.array(final_cols).T.tolist()
-        final_rows = final_rows + re_final_rows
+        filas_finales[:] = []
+        re_filas_finales = np.array(final_cols).T.tolist()
+        filas_finales = filas_finales + re_filas_finales
 
         if min(row_div_val) != 10000000000:
             min_manager = 1
         else:
             min_manager = 0
-        print('pivot element: %s' % pivot_element)
-        print('pivot column: ', pivot_row)
-        print('pivot row: ', pivot_col)
+        print('elemento pivote: %s' % pivot_element)
+        print('columna pivote: ', pivot_row)
+        print('fila pivote: ', pivot_col)
         print("\n")
-        solutions[index_pivot_col] = const_names[index_pivot_row]
+        soluciones[index_pivot_col] = const_names[index_pivot_row]
 
-        print(" %d TABLEAU" % count)
+        print(" %d TABLA" % count)
         try:
-            final_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=solutions)
+            final_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=soluciones)
             print(final_pd)
         except:
-            print("%d TABLEAU" % count)
+            print("%d TABLA" % count)
             print('  ', const_names)
             i = 0
             for cols in final_cols:
-                print(solutions[i], cols)
+                print(soluciones[i], cols)
                 i += 1
         count += 1
         last_col = final_cols[-1]
-        last_row = final_rows[-1]
+        last_row = filas_finales[-1]
         min_last_row = min(last_col)
         index_of_min = last_col.index(min_last_row)
-        pivot_row = final_rows[index_of_min]
+        pivot_row = filas_finales[index_of_min]
         row_div_val = []
         i = 0
         for _ in last_row[:-1]:
@@ -355,39 +350,39 @@ def maximization(final_cols, final_rows):
         index_min_div_val = row_div_val.index(min_div_val)
         pivot_element = pivot_row[index_min_div_val]
         if pivot_element < 0:
-            print(no_solution)
+            print(noHaySolucion)
     if not pandas_av:
         print("""
-        Please install pandas to make your tables look good
-        install using command $pip install pandas 
+        Instale pandas para que sus tablas se vean bien 
+        instale usando el comando $ pip install pandas 
         """)
 
 
-def minimization(final_cols, final_rows):
+def minimization(final_cols, filas_finales):
     row_app = []
     last_col = final_cols[-1]
     min_last_row = min(last_col)
     min_manager = 1
-    print("1 TABLEAU")
+    print("1 TABLA")
     try:
-        fibal_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=solutions)
+        fibal_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=soluciones)
         print(fibal_pd)
     except:
         print('  ', const_names)
         i = 0
         for cols in final_cols:
-            print(solutions[i], cols)
+            print(soluciones[i], cols)
             i += 1
     count = 2
     pivot_element = 2
     while min_last_row < 0 < pivot_element and min_manager == 1:
         print("*********************************************************")
         last_col = final_cols[-1]
-        last_row = final_rows[-1]
+        last_row = filas_finales[-1]
         min_last_row = min(last_col[:-1])
         index_of_min = last_col.index(min_last_row)
-        pivot_row = final_rows[index_of_min]
-        index_pivot_row = final_rows.index(pivot_row)
+        pivot_row = filas_finales[index_of_min]
+        index_pivot_row = filas_finales.index(pivot_row)
         row_div_val = []
         i = 0
         for _ in last_row[:-2]:
@@ -412,55 +407,55 @@ def minimization(final_cols, final_rows):
             if col is not pivot_col and col is not final_cols[-1]:
                 form = col[index_of_min] / pivot_element
                 final_form = np.array(pivot_col) * form
-                new_col = (np.round((np.array(col) - final_form), decimals)).tolist()
+                new_col = (np.round((np.array(col) - final_form), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
             elif col is pivot_col:
-                new_col = (np.round((np.array(col) / pivot_element), decimals)).tolist()
+                new_col = (np.round((np.array(col) / pivot_element), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
             else:
                 form = abs(col[index_of_min]) / pivot_element
                 final_form = np.array(pivot_col) * form
-                new_col = (np.round((np.array(col) + final_form), decimals)).tolist()
+                new_col = (np.round((np.array(col) + final_form), decimales)).tolist()
                 final_cols[final_cols.index(col)] = new_col
-        final_rows[:] = []
-        re_final_rows = np.array(final_cols).T.tolist()
-        final_rows = final_rows + re_final_rows
+        filas_finales[:] = []
+        re_filas_finales = np.array(final_cols).T.tolist()
+        filas_finales = filas_finales + re_filas_finales
         if min(row_div_val) != 10000000000:
             min_manager = 1
         else:
             min_manager = 0
-        print('pivot element: %s' % pivot_element)
-        print('pivot column: ', pivot_row)
-        print('pivot row: ', pivot_col)
+        print('elemento pivote: %s' % pivot_element)
+        print('columna pivote: ', pivot_row)
+        print('fila pivote: ', pivot_col)
         print("\n")
-        removable = solutions[index_pivot_col]
-        solutions[index_pivot_col] = const_names[index_pivot_row]
+        removable = soluciones[index_pivot_col]
+        soluciones[index_pivot_col] = const_names[index_pivot_row]
         if removable in removable_vars:
             idex_remove = const_names.index(removable)
             for colms in final_cols:
                 colms.remove(colms[idex_remove])
             const_names.remove(removable)
-        print("%d TABLEAU" % count)
+        print("%d TABLA" % count)
         try:
-            fibal_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=solutions)
+            fibal_pd = pd.DataFrame(np.array(final_cols), columns=const_names, index=soluciones)
             print(fibal_pd)
         except:
             print('  ', const_names)
             i = 0
             for cols in final_cols:
-                print(solutions[i], cols)
+                print(soluciones[i], cols)
                 i += 1
         count += 1
-        final_rows[:] = []
-        new_final_rows = np.array(final_cols).T.tolist()
-        for _list in new_final_rows:
-            final_rows.append(_list)
+        filas_finales[:] = []
+        new_filas_finales = np.array(final_cols).T.tolist()
+        for _list in new_filas_finales:
+            filas_finales.append(_list)
 
         last_col = final_cols[-1]
-        last_row = final_rows[-1]
+        last_row = filas_finales[-1]
         min_last_row = min(last_col[:-1])
         index_of_min = last_col.index(min_last_row)
-        pivot_row = final_rows[index_of_min]
+        pivot_row = filas_finales[index_of_min]
         row_div_val = []
         i = 0
         for _ in last_row[:-2]:
@@ -479,12 +474,12 @@ def minimization(final_cols, final_rows):
         index_min_div_val = row_div_val.index(min_div_val)
         pivot_element = pivot_row[index_min_div_val]
         if pivot_element < 0:
-            print(no_solution)
+            print(noHaySolucion)
 
     if not pandas_av:
         print("""
-        Please install pandas to make your tables look good
-        install using command $pip install pandas 
+        Instale pandas para que sus tablas se vean bien 
+        instale usando el comando $ pip install pandas 
         """)
 
 
@@ -492,7 +487,7 @@ def stdz_rows2(column_values):
     final_cols = [column_values[x:x + const_num + 1] for x in range(0, len(column_values), const_num + 1)]
     sum_z = (0 - np.array(final_cols).sum(axis=0)).tolist()
     for _list in sum_z:
-        z2_equation.append(_list)
+        ecuacionZ_2.append(_list)
 
     for cols in final_cols:
         while len(cols) < (const_num + (2 * prod_nums) - 1):
@@ -501,15 +496,15 @@ def stdz_rows2(column_values):
     i = const_num
     for sub_col in final_cols:
         sub_col.insert(i, -1)
-        z2_equation.insert(-1, 1)
+        ecuacionZ_2.insert(-1, 1)
         i += 1
 
     for sub_col in final_cols:
         sub_col.insert(i, 1)
         i += 1
 
-    while len(z2_equation) < len(final_cols[0]):
-        z2_equation.insert(-1, 0)
+    while len(ecuacionZ_2) < len(final_cols[0]):
+        ecuacionZ_2.insert(-1, 0)
 
     return final_cols
 
@@ -531,5 +526,5 @@ def stdz_rows(column_values):
 if __name__ == "__main__":
     main()
 
-# I use python list and arrays(numpy) in most of this program
-# it became simple coz python has a strong power in list and array manipulation and solution
+# Utilizo listas y matrices de Python (numpy) en la mayor parte de este programa
+# se volvió simple porque python tiene un gran poder en la manipulación y solución de listas y matrices 
